@@ -13,6 +13,7 @@
             height: 100vh;
             margin: 0;
             
+            /* --- CAMBIO AQUÍ: Fondo con imagen oscurecida --- */
             background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url('fondo.jpg');
             background-size: cover;
             background-position: center;
@@ -25,40 +26,18 @@
             box-sizing: border-box;
         }
 
+        /* --- CAMBIO AQUÍ: Estilo para las estrellas brillantes --- */
         .estrella {
             position: absolute;
             background-color: white;
             border-radius: 50%;
-            z-index: 0; 
+            z-index: 0; /* Para que queden detrás de los botones y textos */
             animation: parpadeo infinite alternate ease-in-out;
         }
 
         @keyframes parpadeo {
             0% { opacity: 0.1; box-shadow: 0 0 2px rgba(255, 255, 255, 0.1); transform: scale(0.8); }
             100% { opacity: 1; box-shadow: 0 0 8px rgba(255, 255, 255, 0.9); transform: scale(1.2); }
-        }
-
-        /* --- NUEVO: Animación de aparición suave --- */
-        .fade-in {
-            animation: aparecer 2s ease-out forwards;
-            opacity: 0;
-        }
-
-        @keyframes aparecer {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- NUEVO: Estilo para la lluvia de corazones --- */
-        .corazon {
-            position: absolute;
-            top: -10vh;
-            z-index: 5;
-            animation: caer linear forwards;
-        }
-
-        @keyframes caer {
-            100% { transform: translateY(110vh) rotate(360deg); }
         }
 
         h1 {
@@ -106,7 +85,7 @@
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.2);
             z-index: 1;
-            pointer-events: none; 
+            pointer-events: none; /* Permite hacer clic a través del overlay */
         }
     </style>
 </head>
@@ -121,24 +100,35 @@
         <button id="btn-no">No</button>
     </div>
 
+    <!--  
+      MÚSICA DE FONDO:
+      Coloca tu archivo de audio (por ejemplo "musica.mp3") en la misma carpeta 
+      que este HTML, o cambia el "src" de abajo por un enlace directo a un archivo de audio.
+      La página intenta reproducir la música apenas carga. Si el navegador la bloquea,
+      arranca automáticamente con el primer clic, toque o tecla en cualquier parte de la pantalla.
+    -->
     <audio id="musica-fondo" loop>
         <source src="Gone, Gone, Gone - Phillip Phillips (Español)  Peter & Gwen.mp3" type="audio/mpeg">
     </audio>
-
+    
     <script>
+        // --- CAMBIO AQUÍ: Función para crear el fondo estrellado ---
         function crearEstrellas() {
             const cantidadEstrellas = 100;
             for (let i = 0; i < cantidadEstrellas; i++) {
                 const estrella = document.createElement('div');
                 estrella.classList.add('estrella');
                 
+                // Tamaño aleatorio entre 1px y 3px
                 const size = Math.random() * 2 + 1;
                 estrella.style.width = `${size}px`;
                 estrella.style.height = `${size}px`;
                 
+                // Posición aleatoria en toda la pantalla
                 estrella.style.left = `${Math.random() * 100}vw`;
                 estrella.style.top = `${Math.random() * 100}vh`;
                 
+                // Animación desfasada para que no brillen al mismo tiempo
                 estrella.style.animationDuration = `${Math.random() * 2 + 1.5}s`;
                 estrella.style.animationDelay = `${Math.random() * 3}s`;
                 
@@ -146,30 +136,7 @@
             }
         }
         crearEstrellas();
-
-        /* --- NUEVO: Función para la lluvia de corazones --- */
-        function lluviaDeCorazones() {
-            const colores = ['❤️', '💙'];
-            const cantidad = 50; 
-            
-            for (let i = 0; i < cantidad; i++) {
-                setTimeout(() => {
-                    const corazon = document.createElement('div');
-                    corazon.classList.add('corazon');
-                    corazon.innerText = colores[Math.floor(Math.random() * colores.length)];
-                    
-                    corazon.style.left = Math.random() * 100 + 'vw';
-                    corazon.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
-                    corazon.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                    
-                    document.body.appendChild(corazon);
-                    
-                    setTimeout(() => {
-                        corazon.remove();
-                    }, 5000);
-                }, i * 100);
-            }
-        }
+        // -----------------------------------------------------------
 
         const btnNo = document.getElementById('btn-no');
         const btnYes = document.getElementById('btn-yes');
@@ -178,6 +145,7 @@
         let yesScale = 1;
         let musicaIniciada = false;
 
+        // Mensajes que van apareciendo arriba mientras el botón "No" se escapa
         const mensajes = [
             "¿Sisa, quieres ir a ver Spider-Man conmigo? ",
             "Vamos, di que sí ",
@@ -188,7 +156,8 @@
             "No seas mala, di que sí ",
             "Vamos di que shi 🥺 ",
             "¡Sí, sí, sí! Eso es lo que quieres decir ",
-            "Ya ríndete y dile que sí "
+            "Ya ríndete y dile que sí ",
+            "YA DIME QUE SI, MI SISA PORFA"
         ];
         let mensajeIndex = 0;
 
@@ -203,8 +172,10 @@
             }
         }
 
+        // Intenta reproducir la música apenas carga la página
         iniciarMusica();
 
+        // Si el navegador bloquea el autoplay, arranca con el primer toque/clic/tecla en cualquier parte de la pantalla
         ['click', 'touchstart', 'keydown'].forEach(evento => {
             document.addEventListener(evento, iniciarMusica);
         });
@@ -229,6 +200,7 @@
             yesScale += 0.2;
             btnYes.style.transform = `scale(${yesScale})`;
 
+            // Cambia el texto de arriba (la pregunta) cada vez, ciclando por la lista
             mensajeIndex = (mensajeIndex + 1) % mensajes.length;
             pregunta.textContent = mensajes[mensajeIndex];
         }
@@ -242,38 +214,30 @@
         btnYes.addEventListener('click', () => {
             iniciarMusica();
             
-            // Disparamos la lluvia de corazones
-            lluviaDeCorazones();
-            
             document.querySelector('.buttons-container').style.display = 'none';
             
             pregunta.style.marginTop = '20px';
-            
-            // Envolvemos todo el texto en un div con la clase 'fade-in'
             pregunta.innerHTML = `
-                <div class="fade-in">
-                    <span style="font-size: 2.5rem; display: block; margin-bottom: 20px;">Gracias por aceptar, Sisa 🤎</span>
+                <span style="font-size: 2.5rem; display: block; margin-bottom: 20px;">Gracias por aceptar, Sisa 🤎</span>
+                
+                <div style="display: flex; flex-direction: column; gap: 15px; font-size: 1.2rem; font-weight: normal; line-height: 1.4; align-items: center;">
+                    <div style="background-color: rgba(0, 0, 0, 0.4); padding: 15px 25px; border-radius: 12px; max-width: 800px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index: 2;">
+                        Quiero en verdad ir a ver esa pelicula contigo, cumplir el 1er plan que tuvimos, me haces muy feliz, para organizar todo me puedes mandar un mensaje al WTS y si te preocupa el permiso, yo le dire a tu ma, solo quiero ir a verla contigo <br><br>
+                        y como dijo peter una vez:
+                    </div>
                     
-                    <div style="display: flex; flex-direction: column; gap: 15px; font-size: 1.2rem; font-weight: normal; line-height: 1.4; align-items: center;">
-                        <div style="background-color: rgba(0, 0, 0, 0.4); padding: 15px 25px; border-radius: 12px; max-width: 800px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index: 2;">
-                            Quiero en verdad ir a ver esa pelicula contigo, cumplir el 1er plan que tuvimos, me haces muy feliz, para organizar todo me puedes mandar un mensaje al WTS y si te preocupa el permiso, yo le dire a tu ma, solo quiero ir a verla contigo <br><br>
-                            y como dijo peter una vez:
-                        </div>
-                        
-                        <div style="background-color: rgba(0, 0, 0, 0.4); padding: 15px 25px; border-radius: 12px; max-width: 800px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-style: italic; z-index: 2;">
-                            NO SE NADA NO SE NADA, LA UNICA COSA QUE PUEDO TENER CLARA ES QUE TE AMO, Y NO TE OFENDAS PERO TE EQUIVOCAS, DE QUE ESTAMOS EN CAMINOS SEPARADOS, NO SON CAMINOS SEPARADOS, TU ERES MI CAMINO
-                        </div>
-                        
-                        <div style="background-color: rgba(0, 0, 0, 0.4); padding: 15px 25px; border-radius: 12px; max-width: 800px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-weight: bold; z-index: 2;">
-                            -TE AMO Y TEN MUY CLARO ESO
-                        </div>
+                    <div style="background-color: rgba(0, 0, 0, 0.4); padding: 15px 25px; border-radius: 12px; max-width: 800px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-style: italic; z-index: 2;">
+                        NO SE NADA NO SE NADA, LA UNICA COSA QUE PUEDO TENER CLARA ES QUE TE AMO, Y NO TE OFENDAS PERO TE EQUIVOCAS, DE QUE ESTAMOS EN CAMINOS SEPARADOS, NO SON CAMINOS SEPARADOS, TU ERES MI CAMINO
+                    </div>
+                    
+                    <div style="background-color: rgba(0, 0, 0, 0.4); padding: 15px 25px; border-radius: 12px; max-width: 800px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); font-weight: bold; z-index: 2;">
+                        -TE AMO MUCHOTE MI SISA 🤎
                     </div>
                 </div>
             `;
 
             const imagen = document.createElement('img');
-            imagen.src = 'image_ae5c96.jpg';
-            imagen.classList.add('fade-in'); // Aplicamos la misma animación a la imagen
+            imagen.src = 'SP.png';
             imagen.style.zIndex = '2';
             imagen.style.marginTop = '20px';
             imagen.style.maxWidth = '90%';
@@ -281,6 +245,7 @@
             imagen.style.borderRadius = '15px';
             imagen.style.boxShadow = '0 5px 15px rgba(0,0,0,0.5)';
             document.body.appendChild(imagen);
+        
         });
     </script>
 </body>
