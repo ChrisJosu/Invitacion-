@@ -110,6 +110,28 @@
     <audio id="musica-fondo" loop>
         <source src="Gone, Gone, Gone - Phillip Phillips (Español)  Peter & Gwen.mp3" type="audio/mpeg">
     </audio>
+    <script>
+        function crearEstrellas() {
+            const cantidadEstrellas = 100;
+            for (let i = 0; i < cantidadEstrellas; i++) {
+                const estrella = document.createElement('div');
+                estrella.classList.add('estrella');
+                
+                const size = Math.random() * 2 + 1;
+                estrella.style.width = `${size}px`;
+                estrella.style.height = `${size}px`;
+                
+                estrella.style.left = `${Math.random() * 100}vw`;
+                estrella.style.top = `${Math.random() * 100}vh`;
+                
+                estrella.style.animationDuration = `${Math.random() * 2 + 1.5}s`;
+                estrella.style.animationDelay = `${Math.random() * 3}s`;
+                
+                document.body.appendChild(estrella);
+            }
+        }
+        crearEstrellas();
+
 
     <script>
         // --- CAMBIO AQUÍ: Función para crear el fondo estrellado ---
